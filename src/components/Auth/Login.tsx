@@ -1,6 +1,5 @@
 import { useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
-import { useLoginMutation } from "@/redux/api";
+import { useState } from "react";
 import { loginSuccess } from "@/redux/authSlice";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
@@ -8,45 +7,39 @@ import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Link } from "react-router";
+import { api } from "@/api/axios";
+import { AxiosError } from "axios";
 
 export const Login = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [login, { isLoading, error }] = useLoginMutation();
   const [errorMessage, setErrorMessage] = useState("");
-
-  useEffect(() => {
-    if (error) {
-      const tempErrorMessage =
-        (error as { data?: { message?: string } })?.data?.message ??
-        "An error occurred. Please try again.";
-      setErrorMessage(tempErrorMessage);
-    }
-  }, [error]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage(""); // Reset error message on new submit
+    setErrorMessage(""); // Reset error message
+    setIsLoading(true);
 
     try {
-      const response = await login({ email, password }).unwrap();
-      console.log("login response", response);
-
-      // Store the token in localStorage
-      localStorage.setItem("token", response.token);
-
-      // Dispatch the login success action
-      dispatch(loginSuccess(response));
+      const response = await api.post("/auth/login", {
+        email,
+        password,
+      });
+      // Dispatch login success action
+      dispatch(loginSuccess(response.data));
     } catch (err) {
-      console.error("Login failed:", err);
+      const errorMessage =
+        (err as AxiosError<{ message: string }>)?.response?.data?.message ||
+        "Something went wrong!";
+      setErrorMessage(errorMessage);
     } finally {
-      // Clear the password field
       setEmail("");
       setPassword("");
+      setIsLoading(false);
     }
   };
-
   return (
     <div className="max-w-md mx-auto py-12">
       <div className="text-center mb-8">
