@@ -6,3 +6,6 @@ export * from "./HomepageGuest/GlobalImpact";
 export * from "./HomepageGuest/SearchNgosCampaigns";
 export * from "./HomepageGuest/TrendingCampaigns";
 export * from "./HomepageGuest/Testimonials";
+export * from "./Auth/Login";
+export * from "./Auth/Register";
+export * from "./Auth/Auth";
