@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 export const AboutComponent = () => {
   return (
-    <div className="space-y-10 section-padding">
+    <div id="about" className="space-y-10 section-padding">
       <section className="py-8">
         <h1 className="text-3xl font-bold text-center mb-2">
           How NGOFlow Works

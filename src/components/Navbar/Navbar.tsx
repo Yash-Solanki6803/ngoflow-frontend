@@ -16,9 +16,9 @@ export const Navbar = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const state = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
-  function foo() {
-    console.log("state", state);
-  }
+  // function foo() {
+  //   console.log("state", state);
+  // }
 
   const handleLogout = () => {
     dispatch(logout());
@@ -30,17 +30,19 @@ export const Navbar = () => {
       {/* <div className="px-4 sm:px-6 lg:px-8"> */}
       <div className="flex justify-between h-16">
         <div className="flex-shrink-0 flex items-center">
-          <h1 className="text-xl font-bold text-gray-800">NGOFlow</h1>
+          <Link to="/">
+            <h1 className="text-xl font-bold text-gray-800">NGOFlow</h1>
+          </Link>
         </div>
         <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-1 md:space-x-8">
           <Link
-            to="#"
+            to="/"
             className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium"
           >
             Home
           </Link>
           <Link
-            to="#"
+            to="#about"
             className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium"
           >
             About
@@ -51,13 +53,13 @@ export const Navbar = () => {
           >
             NGOs
           </Link>
-          {/* <a
-            href="#"
+          <Link
+            to="#"
             className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium"
           >
             Campaigns
-          </a> */}
-          <button onClick={foo}>Click</button>
+          </Link>
+          {/* <button onClick={foo}>Click</button> */}
           {state.auth.isLoggedIn ? (
             <>
               <Link to="/dashboard">Dashboard</Link>

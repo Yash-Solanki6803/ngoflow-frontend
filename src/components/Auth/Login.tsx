@@ -6,7 +6,7 @@ import { Card, CardContent } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { api } from "@/api/axios";
 import { AxiosError } from "axios";
 
@@ -16,6 +16,8 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +31,7 @@ export const Login = () => {
       });
       // Dispatch login success action
       dispatch(loginSuccess(response.data));
+      navigate("/dashboard");
     } catch (err) {
       const errorMessage =
         (err as AxiosError<{ message: string }>)?.response?.data?.message ||
