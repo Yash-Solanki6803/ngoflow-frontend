@@ -1,3 +1,11 @@
+import { DeveloperDashboard, Ngo, Volunteer } from "@/components";
+
 export const Dashboard = () => {
-  return <div>Dashboard</div>;
+  return (
+    <>
+      {/* <Volunteer /> */}
+      {/* <Ngo /> */}
+      <DeveloperDashboard />
+    </>
+  );
 };

@@ -9,3 +9,6 @@ export * from "./HomepageGuest/Testimonials";
 export * from "./Auth/Login";
 export * from "./Auth/Register";
 export * from "./Auth/Auth";
+export * from "./Dashboard/Volunteer/Volunteer";
+export * from "./Dashboard/Ngo/Ngo";
+export * from "./Dashboard/Developer/DeveloperDashboard";
