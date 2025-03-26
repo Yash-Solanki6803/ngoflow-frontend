@@ -1,5 +1,25 @@
-import React from "react";
+import {
+  AboutComponent,
+  Footer,
+  GlobalImpact,
+  HeroComponent,
+  SearchNgosCampaigns,
+  Testimonials,
+  TrendingCampaigns,
+} from "../components";
 
 export const Homepage = () => {
-  return <div>Homepage</div>;
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <HeroComponent />
+
+      <AboutComponent />
+      <GlobalImpact />
+      <SearchNgosCampaigns />
+      <TrendingCampaigns />
+      <Testimonials />
+      <Footer />
+    </div>
+  );
 };
