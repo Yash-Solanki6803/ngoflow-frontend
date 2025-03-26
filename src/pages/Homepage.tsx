@@ -1,6 +1,5 @@
 import {
   AboutComponent,
-  Footer,
   GlobalImpact,
   HeroComponent,
   SearchNgosCampaigns,
@@ -19,7 +18,6 @@ export const Homepage = () => {
       <SearchNgosCampaigns />
       <TrendingCampaigns />
       <Testimonials />
-      <Footer />
     </div>
   );
 };

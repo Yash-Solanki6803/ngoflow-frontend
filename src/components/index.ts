@@ -12,3 +12,5 @@ export * from "./Auth/Auth";
 export * from "./Dashboard/Volunteer/Volunteer";
 export * from "./Dashboard/Ngo/Ngo";
 export * from "./Dashboard/Developer/DeveloperDashboard";
+export * from "./Ngo/NgoPage";
+export * from "./Campaign/CampaignPage";
