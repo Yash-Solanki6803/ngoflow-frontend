@@ -1,5 +1,5 @@
+import { UserRole } from "@/api/types";
 import { DeveloperDashboard, Ngo, Volunteer } from "@/components";
-import { UserRole } from "@/redux/authSlice";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { Link } from "react-router";
@@ -21,11 +21,11 @@ export const Dashboard = () => {
   }
 
   switch (auth.user?.role) {
-    case UserRole.Volunteer:
+    case UserRole.VOLUNTEER:
       return <Volunteer />;
-    case UserRole.Ngo:
+    case UserRole.NGO:
       return <Ngo />;
-    case UserRole.Dev:
+    case UserRole.DEV:
       return <DeveloperDashboard />;
     default:
       return <h1>Invalid role</h1>;

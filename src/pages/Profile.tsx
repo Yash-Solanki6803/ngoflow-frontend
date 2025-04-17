@@ -1,4 +1,6 @@
-import { Button } from "@/components/ui/button";
+// src/components/Profile.tsx
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,8 +14,67 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
+import { applyForNgo } from "@/api/services";
+import { ApplyForNgoRequest, UserRole } from "@/api/types";
+import { Button } from "@/components/ui/button";
+import { RootState } from "@/redux/store";
 
 export const Profile = () => {
+  const auth = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    username: "",
+    phone: "",
+    location: "",
+    bio: "",
+    interests: {
+      environment: false,
+      education: false,
+      health: false,
+      animals: false,
+      community: false,
+      arts: false,
+    },
+  });
+  const [ngoFormData, setNgoFormData] = useState<ApplyForNgoRequest>({
+    name: "",
+    description: "",
+    mission: "",
+    categoryId: 0,
+    location: "",
+    contactEmail: "",
+    contactPhone: "",
+  });
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleNgoSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage("");
+    setIsLoading(true);
+
+    try {
+      const response = await applyForNgo(ngoFormData);
+      console.log("Apply for NGO Response:", response); // Log response
+    } catch (error) {
+      setErrorMessage((error as Error).message || "Failed to apply for NGO!");
+    } finally {
+      setIsLoading(false);
+      setNgoFormData({
+        name: "",
+        description: "",
+        mission: "",
+        categoryId: 0,
+        location: "",
+        contactEmail: "",
+        contactPhone: "",
+      });
+    }
+  };
+
   return (
     <div className="space-y-8 mt-10 section-padding">
       <section>
@@ -54,6 +115,9 @@ export const Profile = () => {
             <Button variant="ghost" className="w-full justify-start">
               Connected Accounts
             </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Apply for NGO
+            </Button>
           </nav>
         </div>
 
@@ -88,15 +152,14 @@ export const Profile = () => {
               <form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">First name</Label>
-                    <Input id="firstName" defaultValue="Sophia" />
+                    <Label htmlFor="name">Name</Label>
+                    <Input id="name" defaultValue="Sophia" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="lastName">Last name</Label>
                     <Input id="lastName" defaultValue="Martinez" />
                   </div>
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="username">Username</Label>
                   <div className="flex items-center">
@@ -106,7 +169,6 @@ export const Profile = () => {
                     <Input id="username" defaultValue="sophiam" />
                   </div>
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="email">Email address</Label>
                   <Input
@@ -115,7 +177,6 @@ export const Profile = () => {
                     defaultValue="sophia.martinez@example.com"
                   />
                 </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="phone">Phone number</Label>
@@ -220,6 +281,127 @@ export const Profile = () => {
               <Button>Save Changes</Button>
             </CardFooter>
           </Card>
+
+          {/* New Section for NGO Application */}
+          {auth.user?.role === UserRole.VOLUNTEER && (
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle>Apply for NGO</CardTitle>
+                <CardDescription>
+                  Submit an application to become an NGO
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleNgoSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="ngoName">NGO Name</Label>
+                    <Input
+                      id="ngoName"
+                      value={ngoFormData.name}
+                      onChange={(e) =>
+                        setNgoFormData({ ...ngoFormData, name: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="ngoDescription">Description</Label>
+                    <Textarea
+                      id="ngoDescription"
+                      value={ngoFormData.description}
+                      onChange={(e) =>
+                        setNgoFormData({
+                          ...ngoFormData,
+                          description: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="ngoMission">Mission</Label>
+                    <Textarea
+                      id="ngoMission"
+                      value={ngoFormData.mission}
+                      onChange={(e) =>
+                        setNgoFormData({
+                          ...ngoFormData,
+                          mission: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="ngoCategoryId">Category ID</Label>
+                    <Input
+                      id="ngoCategoryId"
+                      type="number"
+                      value={ngoFormData.categoryId}
+                      onChange={(e) =>
+                        setNgoFormData({
+                          ...ngoFormData,
+                          categoryId: parseInt(e.target.value),
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="ngoLocation">Location</Label>
+                    <Input
+                      id="ngoLocation"
+                      value={ngoFormData.location}
+                      onChange={(e) =>
+                        setNgoFormData({
+                          ...ngoFormData,
+                          location: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="ngoContactEmail">Contact Email</Label>
+                    <Input
+                      id="ngoContactEmail"
+                      type="email"
+                      value={ngoFormData.contactEmail}
+                      onChange={(e) =>
+                        setNgoFormData({
+                          ...ngoFormData,
+                          contactEmail: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="ngoContactPhone">Contact Phone</Label>
+                    <Input
+                      id="ngoContactPhone"
+                      value={ngoFormData.contactPhone}
+                      onChange={(e) =>
+                        setNgoFormData({
+                          ...ngoFormData,
+                          contactPhone: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
+
+                  {errorMessage && (
+                    <p className="text-red-500 text-sm">{errorMessage}</p>
+                  )}
+
+                  <Button className="w-full" type="submit" disabled={isLoading}>
+                    {isLoading ? "Applying..." : "Submit Application"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

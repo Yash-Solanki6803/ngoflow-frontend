@@ -1,48 +1,44 @@
+// src/components/Login.tsx
 import { useDispatch } from "react-redux";
 import { useState } from "react";
-import { loginSuccess } from "@/redux/authSlice";
-import { Button } from "../ui/button";
+import { useNavigate } from "react-router";
 import { Card, CardContent } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Link, useNavigate } from "react-router";
-import { api } from "@/api/axios";
-import { AxiosError } from "axios";
+import { Link } from "react-router";
+import { loginUser } from "@/api/services";
+import { LoginRequest } from "@/api/types";
+import { loginSuccess } from "@/redux/authSlice";
+import { Button } from "../ui/button";
 
 export const Login = () => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
   const navigate = useNavigate();
+  const [formData, setFormData] = useState<LoginRequest>({
+    email: "",
+    password: "",
+  });
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage(""); // Reset error message
+    setErrorMessage("");
     setIsLoading(true);
 
     try {
-      const response = await api.post("/auth/login", {
-        email,
-        password,
-      });
-      // Dispatch login success action
-      dispatch(loginSuccess(response.data));
+      const response = await loginUser(formData);
+      console.log("Login Response:", response); // Log response
+      dispatch(loginSuccess(response)); // Dispatch login success with user and token
       navigate("/dashboard");
-    } catch (err) {
-      const errorMessage =
-        (err as AxiosError<{ message: string }>)?.response?.data?.message ||
-        "Something went wrong!";
-      setErrorMessage(errorMessage);
+    } catch (error) {
+      setErrorMessage((error as Error).message || "Login failed!");
     } finally {
-      setEmail("");
-      setPassword("");
       setIsLoading(false);
     }
   };
+
   return (
     <div className="max-w-md mx-auto py-12">
       <div className="text-center mb-8">
@@ -60,8 +56,10 @@ export const Login = () => {
               <Input
                 id="email"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
                 required
               />
             </div>
@@ -75,8 +73,10 @@ export const Login = () => {
               <Input
                 id="password"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
                 required
               />
             </div>
@@ -91,7 +91,6 @@ export const Login = () => {
               </label>
             </div>
 
-            {/* Display error message if login fails */}
             {errorMessage && (
               <p className="text-red-500 text-sm">{errorMessage}</p>
             )}

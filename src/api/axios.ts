@@ -23,7 +23,7 @@ api.interceptors.request.use(
   }
 );
 
-export const handleApiError = (error: unknown): never => {
+export const handleApiError = (error: unknown) => {
   const errorMessage =
     (error as AxiosError<{ message: string }>)?.response?.data?.message ||
     "Something went wrong!";

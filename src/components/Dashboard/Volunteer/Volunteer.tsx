@@ -1,3 +1,5 @@
+// src/components/Volunteer.tsx
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,8 +11,54 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { MessageSquare, Share2, ThumbsUp } from "lucide-react";
+import {
+  getFollowedNgos,
+  getRegisteredCampaigns,
+  unregisterForCampaign,
+  getSuggestedCampaigns,
+} from "@/api/services";
 
 export const Volunteer = () => {
+  const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(
+    null
+  ); // For unregister demo
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const followedNgosResponse = await getFollowedNgos();
+        console.log("Followed NGOs Response:", followedNgosResponse.data); // Log response
+
+        const registeredCampaignsResponse = await getRegisteredCampaigns();
+        console.log(
+          "Get Registered Campaigns Response:",
+          registeredCampaignsResponse.data
+        ); // Log response
+
+        const suggestedCampaignsResponse = await getSuggestedCampaigns();
+        console.log(
+          "Get Suggested Campaigns Response:",
+          suggestedCampaignsResponse.data
+        ); // Log response
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleUnregister = async () => {
+    if (selectedCampaignId) {
+      try {
+        const response = await unregisterForCampaign(selectedCampaignId);
+        console.log("Unregister for Campaign Response:", response); // Log response
+        setSelectedCampaignId(null); // Reset after unregistration
+      } catch (error) {
+        console.error("Error unregistering from campaign:", error);
+      }
+    }
+  };
+
   return (
     <div className="space-y-8 mt-10 section-padding">
       <section>
@@ -57,6 +105,26 @@ export const Volunteer = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">5</div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-2"
+                onClick={() =>
+                  setSelectedCampaignId("7708afa2-e07b-4cd9-ab16-6b562e1a2df9")
+                } // Hardcoded ID for testing
+                disabled={!selectedCampaignId}
+              >
+                Select Campaign to Unregister
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                className="mt-2"
+                onClick={handleUnregister}
+                disabled={!selectedCampaignId}
+              >
+                Unregister
+              </Button>
             </CardContent>
             <CardFooter>
               <Button variant="link" className="px-0" onClick={() => {}}>

@@ -2,7 +2,7 @@ import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 
 export const Footer = () => {
   return (
-    <footer className="bg-muted py-12 mt-12">
+    <footer className="bg-muted py-12 mt-12 section-padding">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>

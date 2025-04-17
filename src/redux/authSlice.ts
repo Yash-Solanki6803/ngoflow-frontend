@@ -1,31 +1,18 @@
+import { LoginResponse, User } from "@/api/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-// Define the user type
-export enum UserRole {
-  Volunteer = "volunteer",
-  Ngo = "ngo",
-  Dev = "dev",
-}
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: UserRole;
-  interestedCategories: { id: number; name: string }[];
-  interestedSubcategories: { id: number; name: string }[];
-}
 
 // Define the Auth State
 interface AuthState {
   user: User | null;
   isLoggedIn: boolean;
+  token: string | null;
 }
 
 // Initial state
 const initialState: AuthState = {
   user: null,
   isLoggedIn: false,
+  token: null,
 };
 
 // Create Auth Slice
@@ -33,17 +20,18 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loginSuccess: (
-      state,
-      action: PayloadAction<{ user: User; token: string }>
-    ) => {
+    loginSuccess: (state, action: PayloadAction<LoginResponse>) => {
       state.user = action.payload.user;
+      state.token = action.payload.token;
       state.isLoggedIn = true;
+      // Save token to localStorage (optional)
       localStorage.setItem("token", action.payload.token);
     },
     logout: (state) => {
       state.user = null;
       state.isLoggedIn = false;
+      state.token = null; // Ensure token is cleared
+      // Clear token from localStorage (optional)
       localStorage.removeItem("token");
     },
   },

@@ -1,3 +1,4 @@
+// src/components/NgoPage.tsx
 import {
   Facebook,
   Globe,
@@ -20,7 +21,12 @@ import {
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Badge } from "../ui/badge";
 
-export const NgoPage = () => {
+interface NgoPageProps {
+  onToggleFollow: () => void;
+  isFollowing: boolean;
+}
+
+export const NgoPage = ({ onToggleFollow, isFollowing }: NgoPageProps) => {
   return (
     <div className="space-y-8 mt-10 section-padding">
       <section>
@@ -40,8 +46,8 @@ export const NgoPage = () => {
             <h1 className="text-3xl font-bold">GreenEarth Foundation</h1>
             <p className="text-muted-foreground">Environmental Conservation</p>
           </div>
-          <Button variant="outline" onClick={() => {}}>
-            Follow NGO
+          <Button variant="outline" onClick={onToggleFollow}>
+            {isFollowing ? "Unfollow NGO" : "Follow NGO"}
           </Button>
         </div>
       </section>

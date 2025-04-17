@@ -1,3 +1,4 @@
+// src/components/CampaignPage.tsx
 import { Button } from "../ui/button";
 import { CheckCircle, Facebook, Heart, Share2 } from "lucide-react";
 import { Badge } from "../ui/badge";
@@ -12,7 +13,17 @@ import { Input } from "../ui/input";
 import { Progress } from "../ui/progress";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 
-export const CampaignPage = () => {
+interface CampaignPageProps {
+  onRegister: () => void;
+  onUnregister: () => void;
+  isRegistered: boolean;
+}
+
+export const CampaignPage = ({
+  onRegister,
+  onUnregister,
+}: // isRegistered,
+CampaignPageProps) => {
   return (
     <div className="space-y-8 mt-10 section-padding">
       <section>
@@ -63,7 +74,8 @@ export const CampaignPage = () => {
               <Heart className="h-4 w-4" />
               Like Campaign
             </Button>
-            <Button>Register as Volunteer</Button>
+            <Button onClick={onUnregister}>{"Unregister as Volunteer"}</Button>
+            <Button onClick={onRegister}>{"Register as Volunteer"}</Button>
           </div>
         </div>
 

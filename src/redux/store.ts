@@ -1,10 +1,11 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "./authSlice";
-import storage from "redux-persist/lib/storage/session";
+import storage from "redux-persist/lib/storage";
 import {
   FLUSH,
   PAUSE,
   PERSIST,
+  PersistConfig,
   persistReducer,
   persistStore,
   PURGE,
@@ -12,22 +13,24 @@ import {
   REHYDRATE,
 } from "redux-persist";
 
-const persistConfig = {
-  key: "root",
-  storage,
-  whitelist: ["auth"], // Persist only authentication state
-};
-
 export interface RootState {
   auth: ReturnType<typeof authReducer>;
 }
 
-const persistedAuthReducer = persistReducer(persistConfig, authReducer);
+const persistConfig: PersistConfig<RootState> = {
+  key: "root", // Match the reducer key
+  storage,
+  whitelist: ["auth"], // No need for whitelist since this config is specific to auth
+};
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+});
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: {
-    auth: persistedAuthReducer,
-  },
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
